@@ -5,7 +5,7 @@ import Foundation
 /// Swift 标准的 `String(localized:bundle: .module)` 在 SPM plugin bundle 中
 /// 无法正确读取编译后的 `.lproj` 资源。该工具统一提供运行时本地化查找，
 /// 并回退到 `.xcstrings` catalog，作为 Lumi 多语言基础设施。
-public enum LumiLocalization {
+enum LumiUILocalizationRuntime {
     private static let missingMarker = "\u{FFFF}"
     private static let supportedLanguages = ["en", "zh-Hans", "zh-HK", "zh-TW", "zh-Hant"]
     private static let resultCache = LocalizationResultCache.shared
