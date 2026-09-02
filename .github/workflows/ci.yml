@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: Swift Package Tests
+    runs-on: macos-14
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate package manifest
+        run: swift package dump-package
+      - name: Run tests
+        run: swift test

@@ -1,0 +1,33 @@
+// swift-tools-version: 6.0
+import PackageDescription
+
+let package = Package(
+    name: "LumiUI",
+    defaultLocalization: "en",
+    platforms: [
+        .macOS(.v14),
+        .iOS(.v17)
+    ],
+    products: [
+        .library(
+            name: "LumiUI",
+            targets: ["LumiUI"]
+        )
+    ],
+    targets: [
+        .target(
+            name: "LumiUI",
+            path: ".",
+            exclude: ["Tests", "README.md", "LICENSE"],
+            sources: ["Sources"],
+            resources: [
+                .process("Resources")
+            ]
+        ),
+        .testTarget(
+            name: "LumiUITests",
+            dependencies: ["LumiUI"],
+            path: "Tests"
+        )
+    ]
+)
