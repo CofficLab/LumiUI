@@ -1,11 +1,12 @@
 import SwiftUI
 
 /// 分组卡片内的设置行：图标 + 标题/描述 + 右侧自定义内容
-public struct AppSettingRow<Content: View>: View {
+public struct AppSettingRow<Content: View, TitleSuffix: View>: View {
     let title: String
     let description: String?
     let icon: String?
     let content: Content
+    let titleSuffix: TitleSuffix
     let action: (() -> Void)?
 
     @State private var isHovered = false
@@ -15,12 +16,14 @@ public struct AppSettingRow<Content: View>: View {
         title: String,
         description: String? = nil,
         icon: String? = nil,
+        @ViewBuilder titleSuffix: () -> TitleSuffix = { EmptyView() },
         action: (() -> Void)? = nil,
         @ViewBuilder content: () -> Content
     ) {
         self.title = title
         self.description = description
         self.icon = icon
+        self.titleSuffix = titleSuffix()
         self.action = action
         self.content = content()
     }
@@ -69,8 +72,12 @@ public struct AppSettingRow<Content: View>: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.body)
+                HStack(spacing: 4) {
+                    Text(title)
+                        .font(.body)
+
+                    titleSuffix
+                }
 
                 if let description {
                     Text(description)
