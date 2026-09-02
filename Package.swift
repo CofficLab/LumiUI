@@ -18,7 +18,7 @@ let package = Package(
         .target(
             name: "LumiUI",
             path: ".",
-            exclude: ["Tests", "README.md", "LICENSE"],
+            exclude: ["Tests", "README.md", "README_zh.md", "LICENSE"],
             sources: ["Sources"],
             resources: [
                 .process("Resources")
