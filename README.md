@@ -173,6 +173,11 @@ Issues and pull requests are welcome. Please keep public APIs documented, add or
 
 LumiUI is released under the [MIT License](LICENSE).
 
+## 🚀 Projects Using LumiUI
+
+- [Lumi](https://github.com/CofficLab/Lumi) — an AI-powered personal desktop assistant for macOS.
+- [GitOK](https://github.com/CofficLab/GitOK) — a macOS project and Git management tool.
+
 ## 🔗 Links
 
 - [LumiUI on GitHub](https://github.com/CofficLab/LumiUI)

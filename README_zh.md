@@ -511,6 +511,11 @@ swift test --enable-code-coverage
 
 LumiUI 采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件。
 
+## 🚀 使用 LumiUI 的项目
+
+- [Lumi](https://github.com/CofficLab/Lumi) — 面向 macOS 的 AI 驱动个人桌面助理。
+- [GitOK](https://github.com/CofficLab/GitOK) — 面向 macOS 的项目与 Git 管理工具。
+
 ---
 
 ## 🔗 相关链接
