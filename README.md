@@ -36,7 +36,7 @@ The package provides 30+ ready-to-use SwiftUI components, including:
 
 | Category | Components |
 | --- | --- |
-| Controls | `AppButton`, `AppIconButton`, `AppInputField`, `AppSearchBar`, `AppSegmentedControl` |
+| Controls | `AppButton`, `AppIconButton`, `AppCircularIconButton`, `AppInputField`, `AppSearchBar`, `AppSegmentedControl` |
 | Identity and labels | `AppAvatar`, `AppTag`, `AppRoleBadge`, `AppSizeLabel`, `GlassBadge` |
 | Cards and surfaces | `AppCard`, `GlassInfoCard`, `GlassSelectionCard`, `AppDisclosureCard`, `AppSurface` |
 | Lists and settings | `AppListRow`, `AppToggleRow`, `AppSettingRow`, `AppSettingSection`, `AppSidebarRow` |
