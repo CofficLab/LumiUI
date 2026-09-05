@@ -172,6 +172,11 @@ private struct AppSplitDividerHoverCoordinator: NSViewRepresentable {
     }
 
     static func dismantleNSView(_ nsView: AppSplitDividerHoverCoordinatorView, coordinator: ()) {
+        // 拆除期间先摘除回调:detach() 里的 onHoverChanged?(false) 会向宿主的
+        // @Binding isHovered 写回,而此时 SwiftUI 正在销毁该 State 存储
+        // (StoredLocation.isUpdating),写回会触发独占性访问检查 fatalError
+        // (每次退出必崩,SIGABRT)。悬停状态随视图销毁本就无意义。
+        nsView.onHoverChanged = nil
         nsView.detach()
     }
 }
@@ -233,6 +238,9 @@ private final class AppSplitDividerHoverCoordinatorView: NSView {
             isScheduledForRetry = false
             attachToSplitViewIfPossible()
         } else {
+            // 视图离开窗口是拆除前奏:同样先摘除回调再取消重试,避免后续
+            // detach() 的 onHoverChanged?(false) 在 State 销毁期间写回 @Binding。
+            onHoverChanged = nil
             cancelRetry()
         }
     }
