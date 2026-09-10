@@ -5,14 +5,18 @@ import SwiftUI
 
 /// The edge of the pane that owns a split-view divider.
 ///
-/// Apply ``View/appSplitDivider(_:)`` to the leading pane of an `HSplitView`
-/// or the top pane of a `VSplitView`.
+/// Apply ``View/appSplitDivider(_:)`` to the pane adjacent to the divider:
+/// use `.trailing`/`.bottom` on the pane before it, or `.leading` on the pane
+/// after it when the decoration should be rendered on the trailing side.
 public enum AppSplitDividerEdge: Sendable {
+    /// A divider immediately before the pane receiving the modifier.
+    case leading
     case trailing
     case bottom
 
     fileprivate var alignment: Alignment {
         switch self {
+        case .leading: .leading
         case .trailing: .trailing
         case .bottom: .bottom
         }
@@ -20,7 +24,7 @@ public enum AppSplitDividerEdge: Sendable {
 
     fileprivate var expectsVerticalSplit: Bool {
         switch self {
-        case .trailing: true
+        case .leading, .trailing: true
         case .bottom: false
         }
     }
@@ -33,10 +37,12 @@ public enum AppSplitDividerResizeTarget: Sendable {
 }
 
 public extension View {
-    /// Adds Lumi's interactive styling to the divider following this pane.
+    /// Adds Lumi's interactive styling to a horizontal split divider.
     ///
-    /// The divider gets a subtle inset shadow, becomes more prominent on hover,
-    /// and uses the matching resize cursor without intercepting native dragging.
+    /// `.trailing` styles the divider after the modified pane, while `.leading`
+    /// styles the divider before it. The divider gets a subtle inset shadow,
+    /// becomes more prominent on hover, and uses the matching resize cursor
+    /// without intercepting native dragging.
     /// Hover feedback is limited to the native draggable area so the cursor never
     /// advertises resizing where `NSSplitView` cannot begin a drag.
     func appSplitDivider(_ edge: AppSplitDividerEdge) -> some View {
@@ -96,6 +102,22 @@ private struct AppSplitDividerModifier: ViewModifier {
     @ViewBuilder
     private var dividerDecoration: some View {
         switch edge {
+        case .leading:
+            ZStack(alignment: .leading) {
+                LinearGradient(
+                    colors: [.black.opacity(isHovered ? 0.1 : 0.04), .clear],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+                .allowsHitTesting(false)
+
+                Rectangle()
+                    .fill(theme.divider)
+                    .frame(width: isHovered ? 0.6 : 0.5)
+                    .allowsHitTesting(false)
+            }
+            .frame(width: 8)
+
         case .trailing:
             ZStack(alignment: .trailing) {
                 LinearGradient(
@@ -533,10 +555,17 @@ private final class AppSplitDividerHoverCoordinatorView: NSView {
     }
 
     private func dividerIndex(in splitView: NSSplitView) -> Int? {
-        guard let paneIndex = splitView.arrangedSubviews.firstIndex(where: { isDescendant(of: $0) }),
-              paneIndex < splitView.arrangedSubviews.count - 1
+        guard let paneIndex = splitView.arrangedSubviews.firstIndex(where: { isDescendant(of: $0) })
         else { return nil }
-        return paneIndex
+
+        switch edge {
+        case .leading:
+            guard paneIndex > 0 else { return nil }
+            return paneIndex - 1
+        case .trailing, .bottom:
+            guard paneIndex < splitView.arrangedSubviews.count - 1 else { return nil }
+            return paneIndex
+        }
     }
 
     private func dividerRect(in splitView: NSSplitView, at index: Int) -> NSRect? {
