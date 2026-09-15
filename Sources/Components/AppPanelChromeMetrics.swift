@@ -8,6 +8,8 @@ public enum AppPanelChromeMetrics {
     public static let breadcrumbContentHeight: CGFloat = 20
     public static let breadcrumbHorizontalPadding: CGFloat = 10
     public static let breadcrumbVerticalPadding: CGFloat = 4
+    /// Spacing between the items hosted in a breadcrumb-height bar.
+    public static let breadcrumbItemSpacing: CGFloat = 8
 
     public static var breadcrumbBarHeight: CGFloat {
         breadcrumbContentHeight + breadcrumbVerticalPadding * 2
