@@ -53,10 +53,16 @@ public extension View {
     /// reports a pane's native size after resize. `initialTrailingSize` is useful
     /// when the desired size belongs to the pane after a horizontal divider,
     /// such as a bottom Content Footer.
+    ///
+    /// Pass `restingShadow: false` for dividers whose resting shadow is
+    /// undesirable — for example a rail sitting next to a panel bar that already
+    /// draws its own edge. Hover still reveals the shadow, so the divider stays
+    /// discoverable.
     func appSplitDivider(
         _ edge: AppSplitDividerEdge,
         initialPosition: CGFloat? = nil,
         initialTrailingSize: CGFloat? = nil,
+        restingShadow: Bool = true,
         resizeTarget: AppSplitDividerResizeTarget = .leading,
         onResize: (@MainActor (CGFloat) -> Void)?
     ) -> some View {
@@ -65,6 +71,7 @@ public extension View {
                 edge: edge,
                 initialPosition: initialPosition,
                 initialTrailingSize: initialTrailingSize,
+                restingShadow: restingShadow,
                 resizeTarget: resizeTarget,
                 onResize: onResize
             )
@@ -79,6 +86,7 @@ private struct AppSplitDividerModifier: ViewModifier {
     let edge: AppSplitDividerEdge
     let initialPosition: CGFloat?
     let initialTrailingSize: CGFloat?
+    let restingShadow: Bool
     let resizeTarget: AppSplitDividerResizeTarget
     let onResize: (@MainActor (CGFloat) -> Void)?
 
@@ -105,7 +113,7 @@ private struct AppSplitDividerModifier: ViewModifier {
         case .leading:
             ZStack(alignment: .leading) {
                 LinearGradient(
-                    colors: [.black.opacity(isHovered ? 0.1 : 0.04), .clear],
+                    colors: [.black.opacity(shadowOpacity), .clear],
                     startPoint: .leading,
                     endPoint: .trailing
                 )
@@ -121,7 +129,7 @@ private struct AppSplitDividerModifier: ViewModifier {
         case .trailing:
             ZStack(alignment: .trailing) {
                 LinearGradient(
-                    colors: [.clear, .black.opacity(isHovered ? 0.1 : 0.04)],
+                    colors: [.clear, .black.opacity(shadowOpacity)],
                     startPoint: .leading,
                     endPoint: .trailing
                 )
@@ -137,7 +145,7 @@ private struct AppSplitDividerModifier: ViewModifier {
         case .bottom:
             ZStack(alignment: .bottom) {
                 LinearGradient(
-                    colors: [.clear, .black.opacity(isHovered ? 0.1 : 0.04)],
+                    colors: [.clear, .black.opacity(shadowOpacity)],
                     startPoint: .top,
                     endPoint: .bottom
                 )
@@ -150,6 +158,26 @@ private struct AppSplitDividerModifier: ViewModifier {
             }
             .frame(height: 8)
         }
+    }
+
+    /// 阴影不透明度：hover 时显现；静息态在 `restingShadow` 为 `false` 时完全隐藏，
+    /// 但分隔线本身（`theme.divider`）与 hover 反馈始终保留。
+    private var shadowOpacity: Double {
+        AppSplitDividerShadow.opacity(isHovered: isHovered, restingShadow: restingShadow)
+    }
+}
+
+/// 分隔线渐变阴影的不透明度。抽成独立类型以便直接验证 hover / 静息两种状态的取值，
+/// 无需构造视图。
+enum AppSplitDividerShadow {
+    /// 静息态阴影（未显式关闭时）。
+    static let resting: Double = 0.04
+    /// hover 态阴影。
+    static let hovered: Double = 0.1
+
+    static func opacity(isHovered: Bool, restingShadow: Bool) -> Double {
+        guard isHovered else { return restingShadow ? resting : 0 }
+        return hovered
     }
 }
 
