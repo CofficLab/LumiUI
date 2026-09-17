@@ -176,6 +176,7 @@ public struct GlassTextField: View {
     private var fieldBackground: some View {
         RoundedRectangle(cornerRadius: DesignTokens.Radius.sm)
             .fill(DesignTokens.Material.glass.opacity(isFocused ? 0.2 : 0.1))
+            .appInputSurface(cornerRadius: DesignTokens.Radius.sm)
     }
 
     @ViewBuilder private var fieldBorder: some View {

@@ -57,6 +57,7 @@ public struct AppSearchBar: View {
     private var background: some View {
         RoundedRectangle(cornerRadius: AppUI.Radius.sm)
             .fill(AppUI.Material.glass)
+            .appInputSurface(cornerRadius: AppUI.Radius.sm)
             .overlay(
                 RoundedRectangle(cornerRadius: AppUI.Radius.sm)
                     .stroke(isFocused ? theme.primary.opacity(0.3) : Color.white.opacity(0.08), lineWidth: 1)

@@ -44,6 +44,7 @@ public struct AppFocusableInputField: View {
         .background(
             RoundedRectangle(cornerRadius: DesignTokens.Radius.sm, style: .continuous)
                 .fill(theme.appListRowBackground)
+                .appInputSurface(cornerRadius: DesignTokens.Radius.sm)
         )
         .overlay(
             RoundedRectangle(cornerRadius: DesignTokens.Radius.sm, style: .continuous)
