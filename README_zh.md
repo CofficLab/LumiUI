@@ -40,6 +40,8 @@ LumiUI 是一个独立的 Swift Package，提供可复用的 SwiftUI 设计令�
 - `AppPlaybackControlButtonStyle` - 支持悬停、按压和减少动态效果的播放控件样式
 - `AppResponsivePlayerLayoutMetrics` - 可配置的播放器响应式布局规则
 - `AppDebugBadgeModifier` - 仅调试构建显示的视图标记和边框
+- `AppSkeletonBlock` / `AppSkeletonText` - 可组合的加载骨架占位块与文本行
+- `AppActivityHeatmap` - 按日历布局的活动热力图
 
 #### 卡片组件
 - `GlassCard` - 玻璃态卡片容器
@@ -99,6 +101,33 @@ let showSecondaryColumn = layout.shouldShowSecondaryColumn(width: windowWidth)
 ```
 
 `AppPlaybackProgress` 也可以脱离视图独立用于播放时间归一化、跳转和格式化。`.appDebugBadge(_:)` 在 Debug 下显示标记与边框，在 Release 下不产生视觉效果。
+
+### 加载骨架
+
+使用 `AppSkeletonBlock` 和 `AppSkeletonText` 按真实内容形状组合首屏占位；组件跟随当前主题，并复用 LumiUI 的动效偏好设置。
+
+```swift
+VStack(alignment: .leading, spacing: 8) {
+    AppSkeletonBlock(width: 28, height: 28, shape: .circle)
+    AppSkeletonText(lineWidths: [1, 0.68])
+}
+```
+
+### 活动热力图
+
+调用方传入每天的活动等级与可见日期范围；缺失日期按零活动显示，数据聚合和等级划分仍由功能模块负责。
+
+```swift
+AppActivityHeatmap(
+    days: dailyActivity.map { day in
+        AppActivityHeatmapDay(date: day.date, level: day.level, accessibilityLabel: day.label)
+    },
+    range: startDate...endDate,
+    calendar: calendar,
+    showsWeekdayLabels: true,
+    showsLegend: true
+)
+```
 
 ---
 

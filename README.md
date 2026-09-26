@@ -40,8 +40,8 @@ The package provides 30+ ready-to-use SwiftUI components, including:
 | Identity and labels | `AppAvatar`, `AppTag`, `AppRoleBadge`, `AppSizeLabel`, `GlassBadge` |
 | Cards and surfaces | `AppCard`, `GlassInfoCard`, `GlassSelectionCard`, `AppDisclosureCard`, `AppSurface` |
 | Lists and settings | `AppListRow`, `AppToggleRow`, `AppSettingRow`, `AppSettingSection`, `AppSidebarRow` |
-| Feedback and layout | `AppEmptyState`, `AppErrorBanner`, `AppLoadingOverlay`, `AppDivider`, `AppLabeledDivider`, `AppTooltip` |
-| Content and charts | `AppHTTPResponseView`, `AppImagePreviewGrid`, `AppLineChart`, `AppBarChart`, `MessageBubble` |
+| Feedback and layout | `AppEmptyState`, `AppErrorBanner`, `AppLoadingOverlay`, `AppSkeletonBlock`, `AppSkeletonText`, `AppDivider`, `AppLabeledDivider`, `AppTooltip` |
+| Content and charts | `AppHTTPResponseView`, `AppImagePreviewGrid`, `AppLineChart`, `AppBarChart`, `AppActivityHeatmap`, `MessageBubble` |
 | Media and utilities | `AppPlaybackControlButtonStyle`, `AppResponsivePlayerLayoutMetrics`, `AppDebugBadgeModifier` |
 | Product scaffolding | Settings, onboarding, landing-page, menu-bar, and status-bar building blocks |
 
@@ -64,6 +64,33 @@ let showSecondaryColumn = layout.shouldShowSecondaryColumn(width: windowWidth)
 ```
 
 `AppPlaybackProgress` exposes the same finite-value normalization, seeking, and time-formatting rules independently of the slider. `appDebugBadge(_:)` adds a deterministic label and outline in debug builds and has no visual effect in release builds.
+
+### Loading placeholders
+
+Compose placeholders to match the shape of the content being loaded. `AppSkeletonBlock` supports rectangle, rounded rectangle, capsule, and circle silhouettes; `AppSkeletonText` takes line-width ratios. Both use the current theme and LumiUI's motion-aware shimmer.
+
+```swift
+VStack(alignment: .leading, spacing: 8) {
+    AppSkeletonBlock(width: 28, height: 28, shape: .circle)
+    AppSkeletonText(lineWidths: [1, 0.68])
+}
+```
+
+### Activity heatmaps
+
+Pass daily activity levels and a visible date range. Missing dates render at level zero; aggregation and level selection stay in the feature that owns the data.
+
+```swift
+AppActivityHeatmap(
+    days: dailyActivity.map { day in
+        AppActivityHeatmapDay(date: day.date, level: day.level, accessibilityLabel: day.label)
+    },
+    range: startDate...endDate,
+    calendar: calendar,
+    showsWeekdayLabels: true,
+    showsLegend: true
+)
+```
 
 ## 🚀 Getting Started
 
