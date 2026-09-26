@@ -36,13 +36,34 @@ The package provides 30+ ready-to-use SwiftUI components, including:
 
 | Category | Components |
 | --- | --- |
-| Controls | `AppButton`, `AppIconButton`, `AppCircularIconButton`, `AppInputField`, `AppSearchBar`, `AppSegmentedControl` |
+| Controls | `AppButton`, `AppIconButton`, `AppCircularIconButton`, `AppInputField`, `AppSearchBar`, `AppSegmentedControl`, `AppPlaybackProgressBar` |
 | Identity and labels | `AppAvatar`, `AppTag`, `AppRoleBadge`, `AppSizeLabel`, `GlassBadge` |
 | Cards and surfaces | `AppCard`, `GlassInfoCard`, `GlassSelectionCard`, `AppDisclosureCard`, `AppSurface` |
 | Lists and settings | `AppListRow`, `AppToggleRow`, `AppSettingRow`, `AppSettingSection`, `AppSidebarRow` |
 | Feedback and layout | `AppEmptyState`, `AppErrorBanner`, `AppLoadingOverlay`, `AppDivider`, `AppLabeledDivider`, `AppTooltip` |
 | Content and charts | `AppHTTPResponseView`, `AppImagePreviewGrid`, `AppLineChart`, `AppBarChart`, `MessageBubble` |
+| Media and utilities | `AppPlaybackControlButtonStyle`, `AppResponsivePlayerLayoutMetrics`, `AppDebugBadgeModifier` |
 | Product scaffolding | Settings, onboarding, landing-page, menu-bar, and status-bar building blocks |
+
+### Media controls
+
+LumiUI includes reusable playback controls for apps that need a seek bar and responsive player sizing:
+
+```swift
+AppPlaybackProgressBar(currentTime: $currentTime, duration: duration) { time in
+    player.seek(to: time)
+}
+
+Image(systemName: "play.fill")
+    .appPlaybackControlButton(accessibilityLabel: "Play") {
+        player.play()
+    }
+
+let layout = AppResponsivePlayerLayoutMetrics()
+let showSecondaryColumn = layout.shouldShowSecondaryColumn(width: windowWidth)
+```
+
+`AppPlaybackProgress` exposes the same finite-value normalization, seeking, and time-formatting rules independently of the slider. `appDebugBadge(_:)` adds a deterministic label and outline in debug builds and has no visual effect in release builds.
 
 ## 🚀 Getting Started
 
@@ -116,7 +137,7 @@ VStack(spacing: DesignTokens.Spacing.lg) {
 }
 ```
 
-Available token groups include `Spacing`, `Radius`, `Typography`, `Material`, `Shadow`, and `Duration`. Color tokens adapt to the current color scheme and are available through `ColorTokens`.
+Available token groups include `Spacing`, `Radius`, `Typography`, `Material`, `Shadow`, and `Duration`. They are available through `DesignTokens` and the `AppUI` shorthand namespace. Color tokens adapt to the current color scheme and are available through `ColorTokens`.
 
 ### Themes
 

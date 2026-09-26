@@ -36,6 +36,10 @@ LumiUI 是一个独立的 Swift Package，提供可复用的 SwiftUI 设计令�
 - `AppAvatar` - 用户头像
 - `AppTag` - 标签组件
 - `AppRoleBadge` - 角色徽章
+- `AppPlaybackProgressBar` - 带数值归一化的媒体播放进度条
+- `AppPlaybackControlButtonStyle` - 支持悬停、按压和减少动态效果的播放控件样式
+- `AppResponsivePlayerLayoutMetrics` - 可配置的播放器响应式布局规则
+- `AppDebugBadgeModifier` - 仅调试构建显示的视图标记和边框
 
 #### 卡片组件
 - `GlassCard` - 玻璃态卡片容器
@@ -78,9 +82,29 @@ LumiUI 是一个独立的 Swift Package，提供可复用的 SwiftUI 设计令�
 - **无障碍支持**：符合 WCAG AA 标准，确保良好的可访问性
 - **性能优化**：使用 SwiftUI 最佳实践，确保流畅的渲染性能
 
+### 媒体控件
+
+```swift
+AppPlaybackProgressBar(currentTime: $currentTime, duration: duration) { time in
+    player.seek(to: time)
+}
+
+Image(systemName: "play.fill")
+    .appPlaybackControlButton(accessibilityLabel: "播放") {
+        player.play()
+    }
+
+let layout = AppResponsivePlayerLayoutMetrics()
+let showSecondaryColumn = layout.shouldShowSecondaryColumn(width: windowWidth)
+```
+
+`AppPlaybackProgress` 也可以脱离视图独立用于播放时间归一化、跳转和格式化。`.appDebugBadge(_:)` 在 Debug 下显示标记与边框，在 Release 下不产生视觉效果。
+
 ---
 
 ## 🚀 快速开始
+
+公开的设计令牌可通过 `DesignTokens` 访问；`AppUI` 提供 `Typography`、`Spacing`、`Radius`、`Material`、`Duration` 和 `Shadow` 的简写命名空间。
 
 ### 系统要求
 - macOS 14.0+
