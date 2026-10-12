@@ -94,10 +94,40 @@ private struct AppImagePreviewSheet: View {
     let image: LumiPlatformImage
     @Environment(\.dismiss) private var dismiss
 
+    @State private var scale: CGFloat = 1.0
+    @State private var committedScale: CGFloat = 1.0
+
+    private let minScale: CGFloat = 0.5
+    private let maxScale: CGFloat = 5.0
+    private let step: CGFloat = 0.25
+
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
+            HStack(spacing: 8) {
+                Button {
+                    zoom(to: max(minScale, scale - step))
+                } label: {
+                    Image(systemName: "minus.magnifyingglass")
+                }
+                .disabled(scale <= minScale)
+
+                Button {
+                    zoom(to: 1.0)
+                } label: {
+                    Text("\(Int(scale * 100))%")
+                        .monospacedDigit()
+                        .frame(minWidth: 48)
+                }
+
+                Button {
+                    zoom(to: min(maxScale, scale + step))
+                } label: {
+                    Image(systemName: "plus.magnifyingglass")
+                }
+                .disabled(scale >= maxScale)
+
                 Spacer()
+
                 Button(LumiUILocalization.string("Close")) {
                     dismiss()
                 }
@@ -108,15 +138,35 @@ private struct AppImagePreviewSheet: View {
 
             Divider()
 
-            GeometryReader { geometry in
+            ScrollView([.horizontal, .vertical]) {
                 Image(lumiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height)
+                    .scaleEffect(scale)
+                    .animation(.easeInOut(duration: 0.15), value: scale)
                     .padding(20)
             }
+            .gesture(
+                MagnificationGesture()
+                    .onChanged { value in
+                        scale = clamp(committedScale * value)
+                    }
+                    .onEnded { _ in
+                        committedScale = scale
+                    }
+            )
         }
         .frame(minWidth: 640, minHeight: 480)
+    }
+
+    private func zoom(to newValue: CGFloat) {
+        let clamped = clamp(newValue)
+        scale = clamped
+        committedScale = clamped
+    }
+
+    private func clamp(_ value: CGFloat) -> CGFloat {
+        min(max(value, minScale), maxScale)
     }
 }
 
