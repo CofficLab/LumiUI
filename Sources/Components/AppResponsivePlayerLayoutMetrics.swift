@@ -5,7 +5,7 @@ import CoreGraphics
 /// The defaults are a practical starting point for a compact desktop player;
 /// applications can supply their own thresholds while sharing the same layout
 /// calculations.
-public struct AppResponsivePlayerLayoutMetrics: Equatable {
+public struct AppResponsivePlayerLayoutMetrics: Equatable, Sendable {
     public let minimumWindowSize: CGSize
     public let controlMinimumHeight: CGFloat
     public let contentMinimumHeight: CGFloat
@@ -124,4 +124,12 @@ public struct AppResponsivePlayerLayoutMetrics: Equatable {
     public func needsExpandedWindow(for windowHeight: CGFloat) -> Bool {
         windowHeight - controlMinimumHeight <= contentMinimumHeight
     }
+}
+
+public extension AppResponsivePlayerLayoutMetrics {
+    /// The default layout rules, for views that do not need custom thresholds.
+    ///
+    /// This is a value type, so reaching for a shared instance avoids rebuilding
+    /// the same defaults on every property read.
+    static let shared = AppResponsivePlayerLayoutMetrics()
 }
