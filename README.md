@@ -65,6 +65,38 @@ let showSecondaryColumn = layout.shouldShowSecondaryColumn(width: windowWidth)
 
 `AppPlaybackProgress` exposes the same finite-value normalization, seeking, and time-formatting rules independently of the slider. `appDebugBadge(_:)` adds a deterministic label and outline in debug builds and has no visual effect in release builds.
 
+### Symbols and view utilities
+
+`AppSymbol` names the SF Symbols the library uses most, so a glyph is declared once instead of being retyped as a string literal at every call site. The `Image` extension offers ready-made accessors for the common ones.
+
+```swift
+Image(systemName: AppSymbol.musicLibrary)
+Image.appClose
+```
+
+A small set of view modifiers covers the layout and interaction boilerplate that otherwise repeats across every feature package:
+
+```swift
+content
+    .appIf(isSelected)
+    .appRoundedMedium()
+    .appHoverScale(1.05)
+
+VStack { AppButton("Play") { player.play() } }
+    .appFillAvailableSpace()
+```
+
+| Modifier | Purpose |
+| --- | --- |
+| `appIf(_:)` | Render conditionally; also has `otherwise:` and `transform:` forms |
+| `appFillAvailableSpace()` / `appFillAvailableHeight()` | Expand into the space the parent offers |
+| `appVStackCenter()` / `appHStackCenter()` | Center within the parent axis |
+| `appRounded(radius:)` / `appRoundedMedium()` / `appRoundedLarge()` | Clip to a token-driven radius |
+| `appPlainButton(_:)` | Wrap a view as a borderless button |
+| `appHoverScale(_:duration:)` | Grow on hover, honoring reduced motion (macOS) |
+| `appScrollView(axes:showsIndicators:contentInsets:)` | Scrollable container with optional content insets |
+| `appShadow(_:)` and `shadowNone()`…`shadowXxxl()` | Shadow levels from `AppShadowLevel` |
+
 ### Loading placeholders
 
 Compose placeholders to match the shape of the content being loaded. `AppSkeletonBlock` supports rectangle, rounded rectangle, capsule, and circle silhouettes; `AppSkeletonText` takes line-width ratios. Both use the current theme and LumiUI's motion-aware shimmer.
