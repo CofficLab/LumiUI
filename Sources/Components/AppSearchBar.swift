@@ -22,6 +22,16 @@ public struct AppSearchBar: View {
     }
 
     public var body: some View {
+        #if os(iOS)
+        iosBody
+        #else
+        macBody
+        #endif
+    }
+
+    // MARK: - macOS
+
+    private var macBody: some View {
         HStack(spacing: AppUI.Spacing.sm) {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 14))
@@ -51,6 +61,44 @@ public struct AppSearchBar: View {
         .padding(.vertical, AppUI.Spacing.sm)
         .background(background)
         .cornerRadius(AppUI.Radius.sm)
+    }
+
+    // MARK: - iOS
+
+    /// iOS 系统搜索框外观：三级填充底色、10pt 圆角、17pt 输入文字。
+    private var iosBody: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(Color.lumiSecondaryLabel)
+
+            TextField(placeholder, text: $text)
+                .textFieldStyle(.plain)
+                .font(.body)
+                .foregroundStyle(Color.lumiPrimaryLabel)
+                .focused($isFocused)
+                .onSubmit {
+                    onSubmit?()
+                }
+
+            if !text.isEmpty {
+                Button {
+                    text = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 16))
+                        .foregroundStyle(Color.lumiSecondaryLabel)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("Clear"))
+            }
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 7)
+        .background {
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(Color.lumiTertiaryFill)
+        }
     }
 
     @ViewBuilder
